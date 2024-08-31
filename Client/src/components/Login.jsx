@@ -68,7 +68,7 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Save user info
 
       toast.success(response.data.message, {
-        onClose: () => navigate('/home'),
+        onClose: () => navigate('/'),
         position: "top-right",
         autoClose: 1000,
         theme: "dark",
@@ -118,7 +118,7 @@ const Login = () => {
 
 
         <div>
-          <h3 style={{fontSize:'15px', color:'white', textAlign:'center', fontWeight:'light'}}>Didn't register yet, <Link style={{color:''}} to={"/"}>Register</Link> Instead ?</h3>
+          <h3 style={{fontSize:'15px', color:'white', textAlign:'center', fontWeight:'light'}}>Didn't register yet, <Link style={{color:''}} to={"/register"}>Register</Link> Instead ?</h3>
         </div>
 
         <div>

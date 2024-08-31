@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
-
+import { FaArrowLeft } from "react-icons/fa";
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +57,7 @@ const Profile = () => {
     Object.keys(formData).forEach(key => {
       console.log('key: ',newErrors);
       const error = validateField(key, formData[key]);
-      if (error) {
+      if (key !== 'its_admin' && error) {
         newErrors[key] = error; }
     });
     setErrors(newErrors);
@@ -121,8 +121,26 @@ const Profile = () => {
   return (
     <div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', marginTop:'20px',marginLeft:'400px',width:'700px', padding: '20px', border: '0.5px solid white', borderRadius: '10px', backgroundColor: '#2C3539' }}>
-        <h2 style={{fontWeight:'bold',textAlign:'center'}}>Your Profile Details</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', marginTop:'20px',marginLeft:'400px',width:'700px', padding: '20px', border: '0.5px solid white', borderRadius: '10px', backgroundColor: 'black' }}>
+
+        <h2 style={{fontWeight:'bold',textAlign:'center',marginTop:'1px',marginBottom:'20px'}}>Your Profile Details</h2>
+        <button onClick={() => navigate('/')} 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          backgroundColor: 'transparent', 
+          border: 'none', 
+          color: 'white', 
+          cursor: 'pointer', 
+          fontSize: '40px',
+          marginLeft:'-10px',
+          marginTop:'-55px',
+          marginBottom:'10px'
+        }}
+      >
+        <FaArrowLeft style={{ marginRight: '8px' }} />
+      
+      </button>
         <div style={{ marginBottom: '15px' }}>
           <label style={{ marginBottom: '5px', fontWeight: 'bold', color: 'white' }}>First Name:</label>
           <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '5px', border: errors.first_name ? '1px solid red' : '1px solid #ccc', fontSize: '15px' }} />

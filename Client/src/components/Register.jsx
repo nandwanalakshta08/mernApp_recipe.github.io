@@ -203,7 +203,6 @@ const Register = () => {
           <input type="text" name="address_line_1" value={formData.address_line_1} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '5px', border: errors.address_line_1 ? '1px solid red' : '1px solid #ccc', fontSize: '16px' }} />
           {errors.address_line_1 && <p style={{ color: 'red', fontSize: '12px', marginTop: '1px' }}>{errors.address_line_1}</p>}
         </div>
-
         <div style={{ marginBottom: '15px' }}>
           <label style={{ marginBottom: '5px', fontWeight: 'bold', color: 'white' }}>Address Line 2:</label>
           <input type="text" name="address_line_2" value={formData.address_line_2} onChange={handleChange} style={{ width: '100%', padding: '10px', borderRadius: '5px', border: errors.address_line_2 ? '1px solid red' : '1px solid #ccc', fontSize: '16px' }} />
@@ -231,9 +230,7 @@ const Register = () => {
          <h3 style={{fontSize:'14px', color:'white', textAlign:'center', fontWeight:'light',marginTop:'5px',marginBottom:'15px'}}>Already registered, <Link to={"/login"}>Login</Link> Instead ?</h3>
          </div>
         <button type="submit" style={{ padding: '10px 20px', borderRadius: '5px', border: 'none', backgroundColor: '#28a745', color: '#fff', fontSize: '16px', cursor: 'pointer' }}>Register</button>
-        
-      </form>
-      
+     </form>
       <ToastContainer />
     </div>
   );

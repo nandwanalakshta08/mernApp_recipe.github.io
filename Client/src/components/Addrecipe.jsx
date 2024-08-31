@@ -6,23 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AddRecipe = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    prepTime: '',
-    cookTime: '',
-    totalTime: '',
-    servings: '',
-    category: '',
-    cuisine: '',
-    difficulty: '',
-    notes: '',
-    ingredients: [{ name: '', quantity: '', unit: '' }],
-    instructions: [{ step: '', description: '' }],
-    nutrition: { calories: '', fat: '', carbohydrates: '', protein: '' },
-    author: { name: '', profileUrl: '' },
-  });
-  const [image, setImage] = useState(null);
+  const [formData, setFormData] = useState({title: '',description: '',prepTime: '',cookTime: '',totalTime: '',servings: '',category: '',cuisine: '',difficulty: '',notes: '',
+    ingredients: [{ name: '', quantity: '', unit: '' }],instructions: [{ step: '', description: '' }],nutrition: { calories: '', fat: '', carbohydrates: '', protein: '' },author: { name: '', profileUrl: '' }});
+  const [images, setImages] = useState([]);
+  const [video, setVideo] = useState(null);
   const [errors, setErrors] = useState({});
 
   const [difficulties, setDifficulties] = useState([]);
@@ -86,8 +73,16 @@ const AddRecipe = () => {
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleImageChange = (event) => {
+    const selectedFiles = Array.from(event.target.files); 
+    setImages(selectedFiles);
+    setErrors((prev)=> ({ ...prev, images:''}));
+  };
+
+  const handleVideoChange = (event) => {
+    const selectedVideo = event.target.files[0]
+    setVideo(selectedVideo);
+    setErrors((prev) => ({...prev, video:''}));
   };
 
   const handleIngredientChange = (index, event) => {
@@ -147,7 +142,8 @@ const AddRecipe = () => {
     if (!formData.cuisine) newErrors.cuisine = 'Cuisine is required';
     if (!formData.difficulty) newErrors.difficulty = 'Difficulty is required';
     if (!formData.notes) newErrors.notes = 'Notes are required';
-    if (!image) newErrors.image = 'Image is required';
+    if (images.length === 0) newErrors.images = 'atleast one Image is required';
+    // if (!video) newErrors.video = 'video is required'
     if (!formData.author.name) newErrors['author.name'] = 'Author name is required';
     if (!formData.author.profileUrl) newErrors['author.profileUrl'] = 'Author profile URL is required';
     if (!formData.nutrition.calories) newErrors['nutrition.calories'] = 'Calories are required';
@@ -174,18 +170,24 @@ const AddRecipe = () => {
     event.preventDefault();
     if (!validateForm()) return;
 
-    const formDataWithImage = new FormData();
+    const formDataWithFiles = new FormData();
     for (const key in formData) {
       if (key === 'ingredients' || key === 'instructions' || key === 'nutrition' || key === 'author') {
-        formDataWithImage.append(key, JSON.stringify(formData[key]));
+        formDataWithFiles.append(key, JSON.stringify(formData[key]));
       } else {
-        formDataWithImage.append(key, formData[key]);
+        formDataWithFiles.append(key, formData[key]);
       }
     }
-    formDataWithImage.append('image', image);
+    images.forEach((image) => {
+      formDataWithFiles.append('images',image)
+    });
+
+    if(video){
+      formDataWithFiles.append('video',video);
+    }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/addrecipe', formDataWithImage, {
+      const response = await axios.post('http://localhost:3000/api/addrecipe', formDataWithFiles, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('authToken')}`
@@ -197,7 +199,6 @@ const AddRecipe = () => {
       if (response.status === 201) {
         console.log('response.status :>> ', response.status);
         toast.success("recipe add suceessfully", {
-        // onClose: () => navigate('/home'),
           position: "top-right",
           autoClose: 1000,
           theme: "dark",
@@ -205,7 +206,7 @@ const AddRecipe = () => {
         });
         setTimeout(()=>{
 
-          navigate('/home')
+          navigate('/')
         },3000)
       } else {
         console.log('=error=', response.message);
@@ -228,10 +229,10 @@ const AddRecipe = () => {
   };
 
   return (
-    <div style={{ maxWidth: '700px', marginTop: '20px', marginLeft: '410px', padding: '20px', backgroundColor: '#2C3539', borderRadius: '8px', border: '2px solid white' }}>
+    <div style={{ maxWidth: '700px', marginTop: '20px', marginLeft: '410px', padding: '20px', backgroundColor: 'black', borderRadius: '8px', border: '2px solid white' }}>
       <h1 style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '20px' }}>Add Recipe</h1>
      
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }} encType="multipart/form-data" >
        
         <div style={{ marginBottom: '15px' }}>
           <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Title:</label>
@@ -416,9 +417,16 @@ const AddRecipe = () => {
 
 
         <div style={{ marginBottom: '15px' }}>
-          <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Images:</label>
-          <input type="file" name="images" onChange={handleImageChange} multiple style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }} />
+          <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Upload Images:</label>
+          <input type="file" name="images" onChange={handleImageChange} multiple accept="image/*" style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }} />
           {errors.images && <div style={{ color: 'red' }}>{errors.images}</div>}
+        </div>
+
+        
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Upload Video:</label>
+          <input type="file" name="video" onChange={handleVideoChange}  accept="video/*" style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }} />
+          {errors.video && <div style={{ color: 'red' }}>{errors.video}</div>}
         </div>
       
         <button type="submit" style={{ padding: '10px 20px', border: 'none', borderRadius: '4px', backgroundColor: '#28a745', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>Submit</button>

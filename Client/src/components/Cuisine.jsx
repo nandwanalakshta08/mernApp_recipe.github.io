@@ -173,21 +173,21 @@ const Cuisine = () => {
     <div style={{ display: 'flex' }}>
       <Sidebar />
       <div style={{ flex: 1, padding: '20px', marginLeft: '250px' }}>
-        <h1>Cuisines</h1>
+        <h1></h1>
         <div style={{ marginBottom: '20px', textAlign: 'right' }}>
           <button
             onClick={() => setShowModal(true)}
-            style={{ width: '200px', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            style={{ width: '125px', padding: '10px', backgroundColor: '#1F2833', color: 'white', border: '1px solid #ddd', borderRadius: '5px', cursor: 'pointer' }}>
             {isEditing ? 'Edit Cuisine' : 'Add Cuisine'}
           </button>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Name</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Description</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Name</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Description</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Status</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -227,7 +227,7 @@ const Cuisine = () => {
         </table>
         {showModal && (
           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }}>
-            <div style={{ backgroundColor: '#2C3539', padding: '20px', borderRadius: '10px', width: '800px',height:'700px' }}>
+            <div style={{ backgroundColor: '#1F2833', padding: '20px', borderRadius: '10px', width: '800px',height:'700px' }}>
               <h2 style={{ color: 'white',textAlign:'center' }}>{isEditing ? 'Edit Cuisine' : 'Add Cuisine'}</h2>
               <input
                 type="text"

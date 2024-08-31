@@ -1,5 +1,3 @@
-// server.js or index.js
-
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -12,6 +10,7 @@ import recipeRouter from './routes/recipe.js';
 import difficultyRouter from './routes/difficulty.js'; 
 import categoryRouter from './routes/category.js'
 import cuisineRouter from './routes/cuisine.js'
+import reviewRouter from './routes/review.js'
 
 const app = express();
 
@@ -24,16 +23,18 @@ app.use(cors({
   credentials: true
 }));
 
-// Serve static files from uploads folder
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/images', express.static(path.join(__dirname, 'uploads/images')));
+app.use('/uploads/videos', express.static(path.join(__dirname, 'uploads/videos')));
+app.use('/reviewimg', express.static(path.join(__dirname, 'reviewimg')));
 
 app.use('/api', userRouter);
 app.use('/api', recipeRouter);
 app.use('/api', difficultyRouter);
 app.use('/api', categoryRouter);
-app.use('/api', cuisineRouter)
+app.use('/api', cuisineRouter);
+app.use('/api', reviewRouter);
 
 mongoose.connect("mongodb+srv://nandwanalakshta08:hNevLaTlq39HYUay@cluster0.hem3nqe.mongodb.net/", {
   dbName: "MERN_Recipe_You_tube",

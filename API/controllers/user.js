@@ -186,6 +186,32 @@ export const resetPassword = async (req,res) => {
     res.json({ message: error.message });
 }
 };
+// export const getallrecipe = async(req, res) =>{
+//   try {
+//     const page = parseInt(req.query.page) || 1; 
+//     const limit = parseInt(req.query.limit) || 5; 
+//     const skip = (page - 1) * limit; 
+
+//     const recipes = await Recipe.find({ status: true }).skip(skip).limit(limit).populate('category', 'name').sort({ created_at: -1 });
+
+//     const totalRecipes = await Recipe.countDocuments({ status: true });
+
+//     res.json({recipes,totalRecipes});
+//   }catch(error) {
+//     console.error("Error in fetching recipes:", error);
+//     res.status(500).json({ message: "Error in fetching recipes" });
+//   }
+// };
+
+
+export const getAllUsers = async (req,res) => {
+  try {
+    const users = await User.find({its_admin: 1}).sort({created_at: -1});
+     res.json({message:"list of all users",users})
+  } catch (error) {
+    res.json({message:'error in fetching users',error})
+  }
+}
 
 
 

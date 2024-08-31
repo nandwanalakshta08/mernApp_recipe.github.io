@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
       type: Number,
       default: 1,
       enum: [0,1],      //0=admin and 1=user
-      require: true
+      // require: true
     }
 });
 

@@ -9,16 +9,13 @@ const Difficulty = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentDifficulty, setCurrentDifficulty] = useState(null);
-  const [newDifficulty, setNewDifficulty] = useState({ name: '', description: '', isActive: true });
+  const [newDifficulty, setNewDifficulty] = useState({ name: '', description: ''});
   const [errors, setErrors] = useState({ name: '', description: '' }); 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
-    fetchDifficulties();
-  }, []);
-
-  const fetchDifficulties = async () => {
+   const fetchDifficulties = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/difficulties');
       setDifficulties(response.data.difficulties);
@@ -26,6 +23,8 @@ const Difficulty = () => {
       console.error('Error fetching difficulties:', error);
     }
   };
+  fetchDifficulties();
+},[]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -100,7 +99,7 @@ const Difficulty = () => {
       console.error('Error saving difficulty:', error);
     }
     setShowModal(false);
-    setNewDifficulty({ name: '', description: '', isActive: true });
+    setNewDifficulty({ name: '', description: '' });
     setIsEditing(false);
     setCurrentDifficulty(null);
   };
@@ -175,21 +174,21 @@ const Difficulty = () => {
     <div style={{ display: 'flex' }}>
       <Sidebar />
       <div style={{ flex: 1, padding: '20px', marginLeft: '250px' }}>
-        <h1>Difficulty</h1>
+        <h1></h1>
         <div style={{ marginBottom: '20px', textAlign: 'right' }}>
           <button
             onClick={() => setShowModal(true)}
-            style={{ width: '200px', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            style={{ width: '125px', padding: '10px', backgroundColor: '#1F2833', color: 'white', border: '1px solid #ddd', borderRadius: '5px', cursor: 'pointer' }}>
             {isEditing ? 'Edit Difficulty' : 'Add Difficulty'}
           </button>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Name</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Description</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Name</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Description</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Status</th>
+              <th style={{ border: '1px solid #ddd', padding: '8px',backgroundColor:'#1F2833' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -229,7 +228,7 @@ const Difficulty = () => {
         </table>
         {showModal && (
             <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1050 }}>
-            <div style={{ backgroundColor: '#2C3539', padding: '20px', borderRadius: '10px', width: '800px',height:'700px' }}>
+            <div style={{ backgroundColor: '#1F2833', padding: '20px', borderRadius: '10px', width: '800px',height:'700px' }}>
               <h2 style={{ color: 'white', textAlign: 'center' }}>{isEditing ? 'Edit Difficulty' : 'Add Difficulty'}</h2>
               <input
                 type="text"

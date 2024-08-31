@@ -16,14 +16,18 @@ import Viewrecipe from './components/Viewrecipe';
 import Difficulty from './components/Difficulty';
 import Category from './components/Category';
 import Cuisine from './components/Cuisine';
+import Logout from './components/Logout';
+import Review from './components/Review';
+import Editreview from './components/Editreview';
+import { Allusers } from './components/Allusers';
 
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/" element={<Register />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path='/profile' element={<Protectedroute><Profile /></Protectedroute>}></Route>
         <Route path="/change-password" element={<Changepassword/>} />
@@ -36,6 +40,10 @@ function App() {
          <Route path="/difficulty" element={<Difficulty />} />
          <Route path="/cuisine" element={<Cuisine />} />
          <Route path="/category" element={<Category />} />
+         <Route path="/logout" element={<Logout />} />
+         <Route path="/review" element={<Review />} />
+         <Route path="/editreview/:reviewId" element={<Editreview />} />
+         <Route path="/allusers" element={<Allusers />} />
       </Routes>
    
     </Router>

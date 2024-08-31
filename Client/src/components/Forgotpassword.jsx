@@ -3,6 +3,8 @@ import axios from 'axios';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast,Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [gmail, setGmail] = useState('');
@@ -11,7 +13,7 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [currentStep, setCurrentStep] = useState('sendOtp'); 
   const[loading,setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleSendOtp = async () => {
     if (!gmail) {
       toast.error('Enter Email Id!', {
@@ -191,14 +193,30 @@ const ForgotPassword = () => {
 
   return (
       <>
-      <h1></h1>
-    
-    <div style={{marginTop:'50px',marginLeft:'460px', width:'600px', padding:'40px', border:'0.5px solid white',borderRadius:'10px',backgroundColor:'#2C3539'}}>
+  <div style={{marginTop:'50px',marginLeft:'460px', width:'600px', padding:'40px', border:'0.5px solid white',borderRadius:'10px',backgroundColor:'black'}}>
+
       <ToastContainer />
+      <button onClick={() => navigate('/login')} 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          backgroundColor: 'transparent', 
+          border: 'none', 
+          color: 'white', 
+          cursor: 'pointer', 
+          fontSize: '40px',
+          marginLeft:'-40px',
+          marginTop:'-35px',
+          marginBottom:'10px'
+        }}
+      >
+        <FaArrowLeft style={{ marginRight: '8px' }} />
+      
+      </button>
       {loading && <div style={{ position: 'fixed',top: '50%',left: '50%',transform: 'translate(-50%, -50%)',border: '4px solid #f3f3f3',borderTop: '4px solid #3498db',borderRadius: '50%',width: '40px',height: '40px',animation: 'spin 1s linear infinite'}}></div>}
       {currentStep ==='sendOtp'&&(
         <div>
-          <h2 style={{textAlign:'center',fontWeight:'bold',marginBottom:'20px',marginTop:'-20px'}}>Reset Your Password</h2>
+          <h2 style={{textAlign:'center',fontWeight:'bold',marginBottom:'20px',marginTop:'-30px'}}>Reset Your Password</h2>
           <input type="gmail" placeholder="Enter your Email" value={gmail} onChange={(e) =>setGmail(e.target.value)} style={{width:'100%',marginBottom:'12px',border:'1px solid black',fontSize:'15px'}}/>
           <button onClick={handleSendOtp} style={{width:'100%',backgroundColor:'#0002ff',color:'white',borderRadius:'8px'}}>Send OTP</button>
         </div>

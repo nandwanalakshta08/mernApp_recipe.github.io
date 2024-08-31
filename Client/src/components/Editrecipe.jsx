@@ -3,34 +3,70 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaArrowLeft } from "react-icons/fa";
+
 
 const EditRecipe = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    prepTime: '',
-    cookTime: '',
-    totalTime: '',
-    servings: '',
-    category: '',
-    cuisine: '',
-    difficulty: '',
-    notes: '',
-    ingredients: [{ name: '', quantity: '', unit: '' }],
-    instructions: [{ step: '', description: '' }],
-    nutrition: { calories: '', fat: '', carbohydrates: '', protein: '' },
-    author: { name: '', profileUrl: '' }
+  const [formData, setFormData] = useState({title: '',description: '',prepTime: '',cookTime: '',totalTime: '',servings: '',category: '',cuisine: '',difficulty: '',notes: '',
+    ingredients: [{ name: '', quantity: '', unit: '' }],instructions: [{ step: '', description: '' }],nutrition: { calories: '', fat: '', carbohydrates: '', protein: '' },author: { name: '', profileUrl: '' },
   });
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [video, setVideo] = useState(null);
   const [errors, setErrors] = useState({});
+  const [difficulties, setDifficulties] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [cuisines, setCuisines] = useState([]);
+
+  useEffect(() => {
+    const fetchDifficulties = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/difficulties');
+        setDifficulties(response.data.difficulties);
+      } catch (error) {
+        console.error('Failed to fetch difficulties', error);
+      }
+    };
+    fetchDifficulties();
+  }, []);
+
+    
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/categories');
+        setCategories(response.data.categories);
+      } catch (error) {
+        console.error('Failed to fetch categories', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+   
+  useEffect(() => {
+    const fetchCuisines = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/cuisines');
+        setCuisines(response.data.cuisines);
+      } catch (error) {
+        console.error('Failed to fetch cuisines', error);
+      }
+    };
+    fetchCuisines();
+  }, []);
+
 
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/api/viewrecipe/${id}`);
+        console.log('responserexipe :>> ', response.data);
+        console.log('response?.data?.images :>> ', response?.data?.images);
         setFormData(response.data);
+        setImages(response?.data?.images)
+        setVideo(response.data.video);
       } catch (error) {
         console.error("Error fetching recipe:", error);
       }
@@ -65,7 +101,11 @@ const EditRecipe = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    setImages([...e.target.files]);
+  };
+
+  const handleVideoChange = (e) => {
+    setVideo(e.target.files[0]);
   };
 
   const addIngredient = () => {
@@ -114,6 +154,8 @@ const EditRecipe = () => {
     if (!formData.cuisine) newErrors.cuisine = 'Cuisine is mandatory to be filled';
     if (!formData.difficulty) newErrors.difficulty = 'Difficulty is mandatory to be filled';
     if (!formData.notes) newErrors.notes = 'Notes are mandatory to be filled';
+    if (!images.length === 0) newErrors.images = 'atleast one Image is required';
+    // if (!video) newErrors.video = 'video is required'
     if (!formData.nutrition.calories) newErrors['nutrition.calories'] = 'Calories are mandatory to be filled';
     if (!formData.nutrition.fat) newErrors['nutrition.fat'] = 'Fat is mandatory to be filled';
     if (!formData.nutrition.carbohydrates) newErrors['nutrition.carbohydrates'] = 'Carbohydrates are mandatory to be filled';
@@ -121,6 +163,9 @@ const EditRecipe = () => {
     if (!formData.author.name) newErrors['author.name'] = 'Author name is mandatory to be filled';
     if (!formData.author.profileUrl) newErrors['author.profileUrl'] = 'Author profile URL is mandatory to be filled';
 
+    console.log('video :>> ', formData.video);
+    console.log("video:)))",video);
+    console.log("image:)))",images);
     formData.ingredients.forEach((ingredient, index) => {
       if (!ingredient.name || !ingredient.quantity || !ingredient.unit) {
         newErrors[`ingredients[${index}]`] = 'All ingredient fields are mandatory';
@@ -139,7 +184,7 @@ const EditRecipe = () => {
     }
     setErrors({});
 
-    const formDataToSend = new FormData();
+    const formDataToSend = new FormData(); 
     for (const key in formData) {
       if (typeof formData[key] === 'object' && !Array.isArray(formData[key])) {
         for (const nestedKey in formData[key]) {
@@ -155,9 +200,28 @@ const EditRecipe = () => {
         formDataToSend.append(key, formData[key]);
       }
     }
-    if (image) {
-      formDataToSend.append('image', image);
+    if (images.length > 0) {
+      images.forEach((file,index)=>{
+        formDataToSend.append('images', file);
+      })
     }
+    if(video){
+      formDataToSend.append('video',video);
+    }
+
+    for (let pair of formDataToSend.entries()) {
+      if (pair[0] === 'images') {
+        const value = pair[1];
+        if (value instanceof File) {
+          console.log('formDataToSend ' + pair[0] + ', ' + value.name);
+        } else {
+          console.log('formDataToSend ' + pair[0] + ', ' + value);
+        }
+      }
+    }
+    
+    
+console.log("FormData==",formDataToSend)
     try {
       const response = await axios.put(`http://localhost:3000/api/editrecipe/${id}`, formDataToSend, {
         headers: {
@@ -193,10 +257,27 @@ const EditRecipe = () => {
       console.error('Error in editing:', error);
     }
   };
+ 
 
   return (
-    <div style={{ maxWidth: '700px', marginTop: '20px', marginLeft: 'auto', marginRight: 'auto', padding: '20px', backgroundColor: '#2C3539', borderRadius: '8px', border: '2px solid white' }}>
-      <h1 style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '20px' }}>Edit Recipe</h1>
+    <div style={{ maxWidth: '700px', marginTop: '20px', marginLeft: 'auto', marginRight: 'auto', padding: '20px', backgroundColor: 'black', borderRadius: '8px', border: '2px solid white' }}>
+      <button onClick={() => navigate('/allrecipe')} 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          backgroundColor: 'transparent', 
+          border: 'none', 
+          color: 'white', 
+          cursor: 'pointer', 
+          fontSize: '40px',
+          marginLeft:'-10px',
+         
+        }}
+      >
+        <FaArrowLeft style={{ marginRight: '8px' }} />
+      
+      </button>
+      <h1 style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '20px',marginTop:'-45px' }}>Edit Recipe</h1>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
      
      
@@ -237,22 +318,43 @@ const EditRecipe = () => {
 </div>
  
 <div style={{ marginBottom: '15px' }}>
-<label  style={{ marginBottom: '5px', fontWeight: 'bold' }}>Category: </label>
-<input type="text" name="category" value={formData.category} onChange={handleChange} style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }}  />
-{errors.category && <p style={{ color: 'red' }}>{errors.category}</p>}
-</div>
+          <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Category:</label>
+          <select id="category" name="category" value={formData.category} onChange={handleChange}  style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }}>
+            <option value="">Select Category</option>
+            {categories.filter(category => category.isActive).map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {errors.category && <div style={{ color: 'red' }}>{errors.category}</div>}
+        </div>
 
-<div style={{ marginBottom: '15px' }}>
-<label  style={{ marginBottom: '5px', fontWeight: 'bold' }}>Cuisine: </label>
-<input type="text" name="cuisine" value={formData.cuisine} onChange={handleChange} style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }}  />
-{errors.cuisine && <p style={{ color: 'red' }}>{errors.cuisine}</p>}
-</div>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Cuisine:</label>
+          <select id="cuisine" name="cuisine" value={formData.cuisine} onChange={handleChange}  style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }}>
+            <option value="">Select Cuisine</option>
+            {cuisines.filter(cuisine => cuisine.isActive).map((cuisine) => (
+              <option key={cuisine._id} value={cuisine._id}>
+                {cuisine.name}
+              </option>
+            ))}
+          </select>
+          {errors.cuisine && <div style={{ color: 'red' }}>{errors.cuisine}</div>}
+        </div>
 
-<div style={{ marginBottom: '15px' }}>
-<label  style={{ marginBottom: '5px', fontWeight: 'bold' }}>Difficulty: </label>
-<input type="text" name="difficulty" value={formData.difficulty} onChange={handleChange} style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }} />
-{errors.difficulty && <p style={{ color: 'red' }}>{errors.difficulty}</p>}
-</div>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Difficulty:</label>
+          <select id="difficulty" name="difficulty" value={formData.difficulty} onChange={handleChange}  style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%' }} >
+            <option value="">Select Difficulty</option>
+            {difficulties.filter(difficulty => difficulty.isActive).map((difficulty) => (
+              <option key={difficulty._id} value={difficulty._id}>
+                {difficulty.name}
+              </option>
+            ))}
+          </select>
+          {errors.difficulty && <div style={{ color: 'red' }}>{errors.difficulty}</div>}
+        </div>
 
 <div style={{ marginBottom: '15px' }}>
 <label  style={{ marginBottom: '5px', fontWeight: 'bold' }}>Notes: </label>
@@ -347,7 +449,6 @@ const EditRecipe = () => {
           </button>
         </div>
 
-        {/* Instructions */}
         <div style={{ marginBottom: '15px' }}>
           <label style={{ marginBottom: '5px', fontWeight: 'bold' }}>Instructions:</label>
           {formData.instructions.map((instruction, index) => (
@@ -384,22 +485,21 @@ const EditRecipe = () => {
         </div>
         <div style={{ marginBottom: '15px' }}>
 <label  style={{ marginBottom: '5px', fontWeight: 'bold' }}>Image: </label>
-<input type="file" name="image" onChange={handleImageChange} style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%', minHeight: '100px' }}/>
-{errors.image && <p style={{ color: 'red' }}>{errors.image}</p>}
+<input type="file" name="image" multiple onChange={handleImageChange} style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%', minHeight: '50px' }}/>
+{errors.images && <p style={{ color: 'red' }}>{errors.images}</p>}
+  </div>
+
+  <div style={{ marginBottom: '15px' }}>
+<label  style={{ marginBottom: '5px', fontWeight: 'bold' }}>Video: </label>
+<input type="file" name="video" onChange={handleVideoChange} style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '4px', width: '100%', minHeight: '50px' }}/>
+
+{errors.video && <p style={{ color: 'red' }}>{errors.video}</p>}
   </div>
 
    
         <button type="submit" style={{ background: '#28a745', color: 'white', border: 'none', borderRadius: '4px', padding: '15px' }}>
           Update Recipe
         </button>
-
-        {Object.keys(errors).length > 0 && (
-          <div style={{ color: 'red', marginTop: '20px' }}>
-            {Object.values(errors).map((error, index) => (
-              <p key={index}>{error}</p>
-            ))}
-          </div>
-        )}
 
         <ToastContainer />
       </form>

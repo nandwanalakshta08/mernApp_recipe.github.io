@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaArrowLeft } from "react-icons/fa";
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({currentPassword: '', newPassword: '', confirmNewPassword: '',});
@@ -134,8 +135,26 @@ const ChangePassword = () => {
   return (
     <div>
      
-      <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', marginTop:'60px',marginLeft:'430px', width:'700px', padding:'70px', border:'0.5px solid white',borderRadius:'10px',backgroundColor:'#2C3539'}}>
+      <form onSubmit={handleSubmit} style={{display:'flex', flexDirection:'column', marginTop:'60px',marginLeft:'430px', width:'700px', padding:'70px', border:'0.5px solid white',borderRadius:'10px',backgroundColor:'black'}}>
         <h2 style={{textAlign:'center',marginTop:'-40px',marginBottom:'20px'}}>Change Your Password</h2>
+        <div>
+        <button onClick={() => navigate('/profile')} 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          backgroundColor: 'transparent', 
+          border: 'none', 
+          color: 'white', 
+          cursor: 'pointer', 
+          fontSize: '40px',
+          marginLeft:'-70px',
+          marginTop:'-80px'
+        }}
+      >
+        <FaArrowLeft style={{ marginRight: '8px' }} />
+      
+      </button>
+      </div>
         <div style={{marginBottom:'10px',position:'relative'}}>
           <label style={{marginBottom: '5px',fontWeight: 'light',color: 'white'}}>Current Password:</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
